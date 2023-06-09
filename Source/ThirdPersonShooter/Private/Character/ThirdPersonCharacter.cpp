@@ -26,6 +26,13 @@ AThirdPersonCharacter::AThirdPersonCharacter()
 void AThirdPersonCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController)
+	{
+		PlayerController->SetInputMode(FInputModeGameAndUI());
+		PlayerController->bShowMouseCursor = true;
+	}
 	
 }
 

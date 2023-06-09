@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "ThirdPersonCharacter.generated.h"
 
+class UInputMappingContext;
+
 UCLASS()
 class THIRDPERSONSHOOTER_API AThirdPersonCharacter : public ACharacter
 {
@@ -24,6 +26,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
+	UInputMappingContext* CharacterContext;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
