@@ -9,6 +9,7 @@
 #include "Components/InputComponent.h"
 
 #include "ToolContextInterfaces.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -31,6 +32,9 @@ AThirdPersonCharacter::AThirdPersonCharacter()
 	 bUseControllerRotationYaw = false;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
+	OverheadWidget->SetupAttachment(RootComponent);
 	
 
 }
