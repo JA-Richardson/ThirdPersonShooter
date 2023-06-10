@@ -11,6 +11,8 @@
 #include "ToolContextInterfaces.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "Weapons/WeaponBase.h"
 
 // Sets default values
 AThirdPersonCharacter::AThirdPersonCharacter()
@@ -36,7 +38,13 @@ AThirdPersonCharacter::AThirdPersonCharacter()
 	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
 	OverheadWidget->SetupAttachment(RootComponent);
 	
+}
 
+void AThirdPersonCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(AThirdPersonCharacter, OverlappingWeapon, COND_OwnerOnly);
 }
 
 // Called when the game starts or when spawned
@@ -55,6 +63,13 @@ void AThirdPersonCharacter::BeginPlay()
 			}
 		}
 	}
+	
+}
+
+// Called every frame
+void AThirdPersonCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 	
 }
 
@@ -94,12 +109,34 @@ void AThirdPersonCharacter::Jump()
 	Super::Jump();
 }
 
-// Called every frame
-void AThirdPersonCharacter::Tick(float DeltaTime)
+void AThirdPersonCharacter::OnRep_OverlappingWeapon(AWeaponBase* LastWeapon)
 {
-	Super::Tick(DeltaTime);
-
+	if(OverlappingWeapon)
+	{
+		OverlappingWeapon->ShowPickupWidget(true);
+	}
+	if(LastWeapon)
+	{
+		LastWeapon->ShowPickupWidget(false);
+	}
 }
+
+void AThirdPersonCharacter::SetOverlappingWeapon(AWeaponBase* Weapon)
+{
+	if(OverlappingWeapon)
+	{
+		OverlappingWeapon->ShowPickupWidget(false);
+	}
+	OverlappingWeapon = Weapon;
+	if(IsLocallyControlled())
+	{
+		if(OverlappingWeapon)
+		{
+			OverlappingWeapon->ShowPickupWidget(true);
+		}
+	}
+}
+
 
 // Called to bind functionality to input
 void AThirdPersonCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -113,4 +150,6 @@ void AThirdPersonCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	}
 
 }
+
+
 
