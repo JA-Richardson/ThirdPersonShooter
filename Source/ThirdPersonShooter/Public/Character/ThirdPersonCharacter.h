@@ -27,6 +27,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void PostInitializeComponents() override;
+	void SetOverlappingWeapon(AWeaponBase* Weapon);
+	bool IsAiming() const;
 
 
 
@@ -47,6 +50,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
 	UInputAction* JumpAction;
 	void Jump();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
+	UInputAction* InteractAction;
+	void Interact(const FInputActionValue& Value);
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
+	UInputAction* AimAction;
+	void AimStart(const FInputActionValue& Value);
+	void AimEnd();
 	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -63,7 +75,11 @@ private:
 	
 	UFUNCTION()
 	void OnRep_OverlappingWeapon(AWeaponBase* LastWeapon);
+	UPROPERTY(VisibleAnywhere)
+	class UCombatComponent* Combat;
+	UFUNCTION(Server, Reliable)
+	void ServerInteract();
 
 public:
-	void SetOverlappingWeapon(AWeaponBase* Weapon);
+	
 };

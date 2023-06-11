@@ -10,6 +10,7 @@
 #include "CompGeom/FitOrientedBox2.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 // Sets default values
@@ -60,11 +61,18 @@ void AWeaponBase::BeginPlay()
 void AWeaponBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
 
+void AWeaponBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AWeaponBase, WeaponState);
+	
 }
 
 void AWeaponBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap"));
 	AThirdPersonCharacter* Character = Cast<AThirdPersonCharacter>(OtherActor);
@@ -83,6 +91,28 @@ void AWeaponBase::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, A
 		Character->SetOverlappingWeapon(nullptr);
 	}
 }
+void AWeaponBase::SetWeaponState(EWeaponState State)
+{
+	WeaponState = State;
+	switch(WeaponState)
+	{
+	case EWeaponState::EWS_Equipped:
+		ShowPickupWidget(false);
+		AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		break;
+	}
+	
+}
+void AWeaponBase::OnRep_WeaponState()
+{
+	switch(WeaponState)
+	{
+	case EWeaponState::EWS_Equipped:
+		ShowPickupWidget(false);
+		
+		break;
+	}
+}
 
 
 void AWeaponBase::ShowPickupWidget(bool bshowWidget)
@@ -92,4 +122,6 @@ void AWeaponBase::ShowPickupWidget(bool bshowWidget)
 		PickupWidget->SetVisibility(bshowWidget);
 	}
 }
+
+
 
