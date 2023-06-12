@@ -177,10 +177,7 @@ void AThirdPersonCharacter::CrouchStart()
 	
 }
 
-void AThirdPersonCharacter::CrouchEnd()
-{
-	//UnCrouch();
-}
+
 
 void AThirdPersonCharacter::SetOverlappingWeapon(AWeaponBase* Weapon)
 {
