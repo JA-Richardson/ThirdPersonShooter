@@ -58,7 +58,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
 	UInputAction* AimAction;
 	void AimStart(const FInputActionValue& Value);
-	void AimEnd();
+	void AimEnd(const FInputActionValue& Value);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
+	UInputAction* CrouchAction;
+	void CrouchStart();
+	void CrouchEnd();
 	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

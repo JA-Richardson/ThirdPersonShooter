@@ -13,6 +13,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "ThirdPersonComponents/CombatComponent.h"
+#include "Util/ColorConstants.h"
 #include "Weapons/WeaponBase.h"
 
 // Sets default values
@@ -41,7 +42,8 @@ AThirdPersonCharacter::AThirdPersonCharacter()
 
 	Combat = CreateDefaultSubobject<UCombatComponent>(TEXT("Combat Component"));
 	Combat->SetIsReplicated(true);
-	
+
+	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 }
 
 void AThirdPersonCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -143,18 +145,41 @@ void AThirdPersonCharacter::Interact(const FInputActionValue& Value)
 
 void AThirdPersonCharacter::AimStart(const FInputActionValue& Value)
 {
+	
 	if(Combat)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Aiming"));
 		Combat->bIsAiming = true;
 	}
+	
 }
 
-void AThirdPersonCharacter::AimEnd()
+void AThirdPersonCharacter::AimEnd(const FInputActionValue& Value)
 {
 	if(Combat)
 	{
 		Combat->bIsAiming = false;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AimEnd"));
 	}
+
+}
+
+void AThirdPersonCharacter::CrouchStart()
+{
+	if(bIsCrouched)
+	{
+		UnCrouch();
+	}
+	else
+	{
+		Crouch();
+	}
+	
+}
+
+void AThirdPersonCharacter::CrouchEnd()
+{
+	//UnCrouch();
 }
 
 void AThirdPersonCharacter::SetOverlappingWeapon(AWeaponBase* Weapon)
@@ -212,7 +237,9 @@ void AThirdPersonCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AThirdPersonCharacter::Jump);
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &AThirdPersonCharacter::Interact);
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &AThirdPersonCharacter::AimStart);
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Canceled, this, &AThirdPersonCharacter::AimEnd);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AThirdPersonCharacter::AimEnd);
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &AThirdPersonCharacter::CrouchStart);
+		//EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Canceled, this, &AThirdPersonCharacter::CrouchEnd);
 	}
 
 }
