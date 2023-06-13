@@ -6,6 +6,7 @@
 #include "Character/ThirdPersonCharacter.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Components/SphereComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent()
@@ -25,6 +26,17 @@ void UCombatComponent::BeginPlay()
 
 	// ...
 	
+}
+
+void UCombatComponent::SetAiming(bool bAiming)
+{
+	bIsAiming = bAiming;
+	ServerSetAiming(bAiming);
+}
+
+void UCombatComponent::ServerSetAiming_Implementation(bool bAiming)
+{
+	bIsAiming = bAiming;
 }
 
 
@@ -49,5 +61,12 @@ void UCombatComponent::EquipWeapon(class AWeaponBase* WeaponToEquip)
 	}
 	EquippedWeapon->SetOwner(OwnerCharacter);
 	
+}
+
+void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UCombatComponent, EquippedWeapon);
+	DOREPLIFETIME(UCombatComponent, bIsAiming);
 }
 

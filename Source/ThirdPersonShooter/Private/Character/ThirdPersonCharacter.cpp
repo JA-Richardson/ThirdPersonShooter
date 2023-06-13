@@ -90,16 +90,8 @@ void AThirdPersonCharacter::Tick(float DeltaTime)
 
 void AThirdPersonCharacter::Move(const FInputActionValue& Value)
 {
-
-	
 	const FVector2D MoveAxisValue = Value.Get<FVector2D>();
 	
-	// if(Controller)
-	// {
-	// 	AddMovementInput(GetActorForwardVector(), MoveAxisValue.Y);
-	// 	AddMovementInput(GetActorRightVector(), MoveAxisValue.X);
-	// }
-
 	const FRotator Rotation = Controller->GetControlRotation();
 	const FRotator YawRotation(0, Rotation.Yaw, 0);
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
@@ -149,7 +141,7 @@ void AThirdPersonCharacter::AimStart(const FInputActionValue& Value)
 	if(Combat)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Aiming"));
-		Combat->bIsAiming = true;
+		Combat->SetAiming(true);
 	}
 	
 }
@@ -158,7 +150,7 @@ void AThirdPersonCharacter::AimEnd(const FInputActionValue& Value)
 {
 	if(Combat)
 	{
-		Combat->bIsAiming = false;
+		Combat->SetAiming(false);
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AimEnd"));
 	}
 

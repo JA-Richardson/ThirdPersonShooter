@@ -20,15 +20,21 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void EquipWeapon(class AWeaponBase* WeaponToEquip);
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 protected:
 	
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	void SetAiming(bool bAiming);
+	UFUNCTION(Server, Reliable)
+	void ServerSetAiming(bool bAiming);
 	
 private:
 	class AThirdPersonCharacter* OwnerCharacter;
+	UPROPERTY(Replicated)
 	class AWeaponBase* EquippedWeapon;
+	UPROPERTY(Replicated)
 	bool bIsAiming;
 	
 
