@@ -140,7 +140,7 @@ void AThirdPersonCharacter::AimStart(const FInputActionValue& Value)
 	
 	if(Combat)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Aiming"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Aiming"));
 		Combat->SetAiming(true);
 	}
 	
@@ -151,7 +151,7 @@ void AThirdPersonCharacter::AimEnd(const FInputActionValue& Value)
 	if(Combat)
 	{
 		Combat->SetAiming(false);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AimEnd"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AimEnd"));
 	}
 
 }
