@@ -15,6 +15,7 @@
 #include "ThirdPersonComponents/CombatComponent.h"
 #include "Util/ColorConstants.h"
 #include "Weapons/WeaponBase.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AThirdPersonCharacter::AThirdPersonCharacter()
@@ -62,6 +63,21 @@ void AThirdPersonCharacter::PostInitializeComponents()
 	}
 }
 
+void AThirdPersonCharacter::PlayFireMontage(bool bAiming)
+{
+	
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	
+	
+		AnimInstance->Montage_Play(FireMontage);
+		FName SectionName;
+		SectionName = bAiming? FName("RifleADS") : FName("RifleHip");
+		AnimInstance->Montage_JumpToSection(SectionName, FireMontage);
+	
+		
+	
+}
+
 // Called when the game starts or when spawned
 void AThirdPersonCharacter::BeginPlay()
 {
@@ -85,6 +101,7 @@ void AThirdPersonCharacter::BeginPlay()
 void AThirdPersonCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	AimOffset(DeltaTime);
 	
 }
 
@@ -162,14 +179,51 @@ void AThirdPersonCharacter::CrouchStart()
 	{
 		UnCrouch();
 	}
-	else
+	
+	
+}
+
+void AThirdPersonCharacter::Fire()
+{
+	if(Combat)
 	{
-		Crouch();
+		Combat->FireButtonPressed(true);
 	}
 	
 }
 
+void AThirdPersonCharacter::FireEnd()
+{
+	if(Combat)
+	{
+		Combat->FireButtonPressed(false);
+	}
+}
 
+void AThirdPersonCharacter::AimOffset(float DeltaTime)
+{
+	FVector Velocity = GetVelocity();
+	Velocity.Z = 0.f;
+	const float Speed = Velocity.Size();
+	const bool bIsInAir = GetCharacterMovement()->IsFalling();
+
+	if(Speed == 0.f && !bIsInAir) //not moving
+	{
+		FRotator CurrentRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+		FRotator DeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentRotation, StartingAimRotation);
+		AO_Yaw = DeltaRotation.Yaw;
+		bUseControllerRotationYaw = false;
+	}
+	if(Speed > 0.0f || bIsInAir) // moving
+	{
+		StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+		AO_Yaw = 0.f;
+		bUseControllerRotationYaw = true;
+	}
+
+	AO_Pitch = GetBaseAimRotation().Pitch;
+	
+}
 
 void AThirdPersonCharacter::SetOverlappingWeapon(AWeaponBase* Weapon)
 {
@@ -212,9 +266,6 @@ void AThirdPersonCharacter::ServerInteract_Implementation()
 	}
 }
 
-
-
-
 // Called to bind functionality to input
 void AThirdPersonCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -228,7 +279,7 @@ void AThirdPersonCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &AThirdPersonCharacter::AimStart);
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AThirdPersonCharacter::AimEnd);
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &AThirdPersonCharacter::CrouchStart);
-		//EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Canceled, this, &AThirdPersonCharacter::CrouchEnd);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AThirdPersonCharacter::Fire);
 	}
 
 }

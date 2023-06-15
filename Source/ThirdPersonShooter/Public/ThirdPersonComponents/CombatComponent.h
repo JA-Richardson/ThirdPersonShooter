@@ -29,6 +29,7 @@ protected:
 	void SetAiming(bool bAiming);
 	UFUNCTION(Server, Reliable)
 	void ServerSetAiming(bool bAiming);
+	void FireButtonPressed(bool bPressed);
 	
 private:
 	class AThirdPersonCharacter* OwnerCharacter;
@@ -36,6 +37,7 @@ private:
 	class AWeaponBase* EquippedWeapon;
 	UPROPERTY(Replicated)
 	bool bIsAiming;
+	bool bFireButtonPressed;
 	
 
 		

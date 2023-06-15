@@ -34,6 +34,18 @@ void UCombatComponent::SetAiming(bool bAiming)
 	ServerSetAiming(bAiming);
 }
 
+void UCombatComponent::FireButtonPressed(bool bPressed)
+{
+	
+	
+	OwnerCharacter->PlayFireMontage(bIsAiming);
+	if(GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Firing"));
+	}
+	
+}
+
 void UCombatComponent::ServerSetAiming_Implementation(bool bAiming)
 {
 	bIsAiming = bAiming;

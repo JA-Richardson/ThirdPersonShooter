@@ -30,6 +30,9 @@ public:
 	virtual void PostInitializeComponents() override;
 	void SetOverlappingWeapon(AWeaponBase* Weapon);
 	bool IsAiming() const;
+	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
+	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
+	void PlayFireMontage(bool bAiming);
 
 
 
@@ -63,7 +66,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
 	UInputAction* CrouchAction;
 	void CrouchStart();
-	void CrouchEnd();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
+	UInputAction* FireAction;
+	void Fire();
+	void FireEnd();
+
+	void AimOffset(float DeltaTime);
 	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -84,6 +93,12 @@ private:
 	class UCombatComponent* Combat;
 	UFUNCTION(Server, Reliable)
 	void ServerInteract();
+
+	float AO_Yaw;
+	float AO_Pitch;
+	FRotator StartingAimRotation;
+	UPROPERTY(EditAnywhere, Category = "Aim Offset")
+	class UAnimMontage* FireMontage;
 
 public:
 	

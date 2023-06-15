@@ -33,4 +33,7 @@ void UThirdPersonAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	bIsAccelerating = Character->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f ? true : false;
 	bAiming = Character->IsAiming();
 	bIsCrouched = Character->bIsCrouched;
+
+	AO_Yaw = Character->GetAO_Yaw();
+	AO_Pitch = Character->GetAO_Pitch();
 }
