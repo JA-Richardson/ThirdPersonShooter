@@ -83,8 +83,13 @@ void UCombatComponent::CrosshairTrace(FHitResult& OutHitResult)
 		QueryParams.bTraceComplex = true;
 		QueryParams.bReturnPhysicalMaterial = true;
 		GetWorld()->LineTraceSingleByChannel(OutHitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility, QueryParams);
+		if (!OutHitResult.bBlockingHit)
+		{
+			OutHitResult.ImpactPoint = TraceEnd;
+		}
 		
 	}
+	
 }
 
 void UCombatComponent::ServerSetAiming_Implementation(bool bAiming)

@@ -16,9 +16,12 @@ public:
 	AProjectileBase();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void Destroyed() override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	UFUNCTION()
+	virtual void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Components")
@@ -28,5 +31,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	class UParticleSystem* Tracer;
 	class UParticleSystemComponent* TracerComponent;
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* ImpactEffect;
+	UPROPERTY(EditAnywhere)
+	class USoundCue* ImpactSound;
 
 };
