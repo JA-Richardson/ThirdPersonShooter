@@ -37,14 +37,6 @@ AWeaponBase::AWeaponBase()
 
 }
 
-void AWeaponBase::Fire(const FVector& HitTarget)
-{
-	if(FireAnimation)
-	{
-		WeaponMesh->PlayAnimation(FireAnimation, false);
-	}
-}
-
 // Called when the game starts or when spawned
 void AWeaponBase::BeginPlay()
 {

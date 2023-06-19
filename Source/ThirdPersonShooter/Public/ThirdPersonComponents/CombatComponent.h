@@ -6,7 +6,6 @@
 #include "Components/ActorComponent.h"
 #include "CombatComponent.generated.h"
 
-#define TRACE_LENGTH 80000.f
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class THIRDPERSONSHOOTER_API UCombatComponent : public UActorComponent
@@ -32,8 +31,6 @@ protected:
 	void ServerSetAiming(bool bAiming);
 	void FireButtonPressed(bool bPressed);
 	
-	void CrosshairTrace(FHitResult& OutHitResult);
-	
 private:
 	class AThirdPersonCharacter* OwnerCharacter;
 	UPROPERTY(Replicated)
@@ -41,7 +38,7 @@ private:
 	UPROPERTY(Replicated)
 	bool bIsAiming;
 	bool bFireButtonPressed;
-	FVector HitTarget;
+	
 
 		
 };

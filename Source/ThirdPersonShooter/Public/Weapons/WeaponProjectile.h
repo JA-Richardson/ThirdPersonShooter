@@ -13,10 +13,5 @@ UCLASS()
 class THIRDPERSONSHOOTER_API AWeaponProjectile : public AWeaponBase
 {
 	GENERATED_BODY()
-public:
-	virtual void Fire(const FVector& HitTarget) override;
-private:
-	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
-	TSubclassOf<class AProjectileBase> ProjectileClass;
 	
 };
