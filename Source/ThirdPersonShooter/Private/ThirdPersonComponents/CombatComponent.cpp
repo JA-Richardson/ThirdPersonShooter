@@ -40,6 +40,17 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
 {
 	
 	
+	ServerFire();
+	
+}
+
+void UCombatComponent::ServerFire_Implementation()
+{
+	MulticastFire();
+}
+
+void UCombatComponent::MulticastFire_Implementation()
+{
 	OwnerCharacter->PlayFireMontage(bIsAiming);
 
 	if(EquippedWeapon == nullptr) return;
@@ -48,7 +59,6 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Firing"));
 	}
-	
 }
 
 void UCombatComponent::CrosshairTrace(FHitResult& OutHitResult)
