@@ -25,5 +25,8 @@ private:
 	class UBoxComponent* CollisionBox;
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	class UProjectileMovementComponent* ProjectileMovement;
+	UPROPERTY(EditAnywhere)
+	class UParticleSystem* Tracer;
+	class UParticleSystemComponent* TracerComponent;
 
 };

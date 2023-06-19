@@ -38,23 +38,24 @@ void UCombatComponent::SetAiming(bool bAiming)
 
 void UCombatComponent::FireButtonPressed(bool bPressed)
 {
-	
-	
-	ServerFire();
+	FHitResult HitResult;
+	CrosshairTrace(HitResult);
+	ServerFire(HitResult.ImpactPoint);
 	
 }
 
-void UCombatComponent::ServerFire_Implementation()
+void UCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& HitLocation)
 {
-	MulticastFire();
+	HitTarget = HitLocation;
+	MulticastFire(HitLocation);
 }
 
-void UCombatComponent::MulticastFire_Implementation()
+void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& HitLocation)
 {
 	OwnerCharacter->PlayFireMontage(bIsAiming);
 
 	if(EquippedWeapon == nullptr) return;
-	EquippedWeapon->Fire(HitTarget);
+	EquippedWeapon->Fire(HitLocation);
 	if(GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Firing"));
@@ -82,17 +83,7 @@ void UCombatComponent::CrosshairTrace(FHitResult& OutHitResult)
 		QueryParams.bTraceComplex = true;
 		QueryParams.bReturnPhysicalMaterial = true;
 		GetWorld()->LineTraceSingleByChannel(OutHitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility, QueryParams);
-		if(!OutHitResult.bBlockingHit)
-		{
-			OutHitResult.ImpactPoint = TraceEnd;
-			HitTarget = TraceEnd;
-		}
-		else
-		{
-			HitTarget = OutHitResult.ImpactPoint;
-			DrawDebugSphere(GetWorld(), OutHitResult.ImpactPoint, 10.f, 8, FColor::Red, false, -1);	
-			
-		}
+		
 	}
 }
 
@@ -106,10 +97,6 @@ void UCombatComponent::ServerSetAiming_Implementation(bool bAiming)
 void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	FHitResult HitResult;
-	CrosshairTrace(HitResult);
-
-	// ...
 }
 
 void UCombatComponent::EquipWeapon(class AWeaponBase* WeaponToEquip)

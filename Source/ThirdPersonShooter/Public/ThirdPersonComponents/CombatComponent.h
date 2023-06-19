@@ -32,9 +32,9 @@ protected:
 	void ServerSetAiming(bool bAiming);
 	void FireButtonPressed(bool bPressed);
 	UFUNCTION(Server, Reliable)
-	void ServerFire();
+	void ServerFire(const FVector_NetQuantize& HitLocation);
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastFire();
+	void MulticastFire(const FVector_NetQuantize& HitLocation);
 	void CrosshairTrace(FHitResult& OutHitResult);
 	
 private:
