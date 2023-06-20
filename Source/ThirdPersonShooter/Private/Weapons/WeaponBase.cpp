@@ -11,6 +11,8 @@
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "Weapons/Casing.h"
+#include "Engine/SkeletalMeshSocket.h"
 
 
 // Sets default values
@@ -42,6 +44,20 @@ void AWeaponBase::Fire(const FVector& HitTarget)
 	if(FireAnimation)
 	{
 		WeaponMesh->PlayAnimation(FireAnimation, false);
+	}
+	if(CasingClass)
+	{
+		const USkeletalMeshSocket* CasingSocket = WeaponMesh->GetSocketByName(FName("AmmoEject"));
+		if(CasingSocket)
+		{
+			FTransform CasingTransform = CasingSocket->GetSocketTransform(WeaponMesh);
+			FActorSpawnParameters SpawnParams;
+			UWorld* World = GetWorld();
+			if(World)
+			{
+				World->SpawnActor<ACasing>(CasingClass, CasingTransform.GetLocation(), CasingTransform.GetRotation().Rotator(), SpawnParams);
+			}
+		}
 	}
 }
 
