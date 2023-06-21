@@ -5,6 +5,12 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "Math/UnrealMathUtility.h"
+
+static float RandRange(float Min, float Max)
+{
+	return FMath::RandRange(Min, Max);
+}
 
 // Sets default values
 ACasing::ACasing()
@@ -17,9 +23,9 @@ ACasing::ACasing()
 	CasingMesh->SetSimulatePhysics(true);
 	CasingMesh->SetEnableGravity(true);
 	CasingMesh->SetNotifyRigidBodyCollision(true);
-	ShellEjectSpeed = rand() / static_cast<float>(RAND_MAX) * 100.0f;
+	//ShellEjectSpeed =  rand() / static_cast<float>(RAND_MAX) * Clamp(ShellEjectSpeed, 5.0f, 10.f);
+    	
 	
-
 }
 
 // Called when the game starts or when spawned
@@ -28,6 +34,7 @@ void ACasing::BeginPlay()
 	Super::BeginPlay();
 	CasingMesh->OnComponentHit.AddDynamic(this, &ACasing::OnHit);
 	CasingMesh->AddImpulse(GetActorForwardVector() * ShellSpeed());
+	SetLifeSpan(3);
 	
 }
 
@@ -47,11 +54,18 @@ void ACasing::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrim
 
 float ACasing::ShellSpeed()
 {
-	float r = (ShellEjectSpeed =  rand() / static_cast<float>(RAND_MAX) * 100.0f);
+	float r = ShellEjectSpeed = RandRange(5, 10);
 	if(GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Shell Speed: %f"), ShellEjectSpeed));
 	}
 	return r;
 }
+
+void ACasing::SetLifeSpan(float InLifespan)
+{
+	Super::SetLifeSpan(InLifespan);
+}
+
+
 
