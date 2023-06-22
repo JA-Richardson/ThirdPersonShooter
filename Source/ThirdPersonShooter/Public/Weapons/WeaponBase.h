@@ -35,6 +35,18 @@ public:
 	virtual void Fire(const FVector& HitTarget);
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() { return WeaponMesh; }
 
+	//Textures for weapon crosshair
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	class UTexture2D* CrosshairCentre;
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	class UTexture2D* CrosshairLeft;
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	class UTexture2D* CrosshairRight;
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	class UTexture2D* CrosshairTop;
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	class UTexture2D* CrosshairBottom;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -65,4 +77,6 @@ private:
 	class UAnimationAsset* FireAnimation;
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	TSubclassOf<class ACasing> CasingClass;
+
+	
 };

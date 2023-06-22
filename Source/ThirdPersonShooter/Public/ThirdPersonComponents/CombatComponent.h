@@ -36,9 +36,12 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastFire(const FVector_NetQuantize& HitLocation);
 	void CrosshairTrace(FHitResult& OutHitResult);
+	void SetHudCrosshair(float DeltaTime);
 	
 private:
 	class AThirdPersonCharacter* OwnerCharacter;
+	class AThirdPersonPlayerController* OwnerController;
+	class AThirdPersonHUD* OwnerHUD;
 	UPROPERTY(Replicated)
 	class AWeaponBase* EquippedWeapon;
 	UPROPERTY(Replicated)
