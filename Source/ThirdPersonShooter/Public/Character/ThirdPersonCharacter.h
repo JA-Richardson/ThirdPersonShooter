@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InputAction.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "ThirdPersonCharacter.generated.h"
 
@@ -33,6 +34,7 @@ public:
 	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
 	void PlayFireMontage(bool bAiming);
+	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 
 

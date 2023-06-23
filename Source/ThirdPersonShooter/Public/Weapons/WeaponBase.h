@@ -47,6 +47,15 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	class UTexture2D* CrosshairBottom;
 
+	//Zoom FOV while aiming
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	float ZoomedFOV = 30.f;
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	float ZoomInterpSpeed = 20.f;
+	FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
+	FORCEINLINE float GetZoomInterpSpeed() const { return ZoomInterpSpeed; }
+	
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

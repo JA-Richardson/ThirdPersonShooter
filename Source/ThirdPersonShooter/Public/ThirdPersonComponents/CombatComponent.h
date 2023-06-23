@@ -47,7 +47,30 @@ private:
 	UPROPERTY(Replicated)
 	bool bIsAiming;
 	bool bFireButtonPressed;
+
+	UPROPERTY(EditAnywhere)
+	float BaseWalkSpeed = 600.f;
+	UPROPERTY(EditAnywhere)
+	float AimWalkSpeed;
 	FVector HitTarget;
+
+	//HUD and Crosshairs
+	float CrosshairVelocityFactor;
+	float CrosshairAirFactor;
+	float CrosshairAimFactor;
+	float CrosshairShootFactor;
+
+	//Aiming and FOV
+	float DefaultFOV;
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	float ZoomedFOV = 30.f;
+
+	float CurrentFOV;
+	
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	float ZoomInterpSpeed;
+
+	void InterpFOV(float DeltaTime);
 
 		
 };

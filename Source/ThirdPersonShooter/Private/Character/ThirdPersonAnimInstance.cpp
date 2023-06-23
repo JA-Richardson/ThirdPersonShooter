@@ -36,4 +36,6 @@ void UThirdPersonAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	AO_Yaw = Character->GetAO_Yaw();
 	AO_Pitch = Character->GetAO_Pitch();
+
+	
 }
