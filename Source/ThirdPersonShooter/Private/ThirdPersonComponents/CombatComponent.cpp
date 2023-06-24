@@ -51,7 +51,8 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 		SetHudCrosshair(DeltaTime);
 		InterpFOV(DeltaTime);
 	}
-	
+	FHitResult HitResult;
+	CrosshairTrace(HitResult);
 }
 void UCombatComponent::SetAiming(bool bAiming)
 {
@@ -113,6 +114,14 @@ void UCombatComponent::CrosshairTrace(FHitResult& OutHitResult)
 		{
 			OutHitResult.ImpactPoint = TraceEnd;
 		}
+		if(OutHitResult.GetActor() && OutHitResult.GetActor()->Implements<UCrosshairInteractInterface>())
+		{
+			HUDPackage.CrosshairColour = FLinearColor::Red;
+		}
+		else
+		{
+			HUDPackage.CrosshairColour = FLinearColor::White;
+		}
 	}
 }
 
@@ -126,7 +135,7 @@ void UCombatComponent::SetHudCrosshair(float DeltaTime)
 		OwnerHUD = OwnerHUD == nullptr ? Cast<AThirdPersonHUD>(OwnerController->GetHUD()) : OwnerHUD;
 		if(OwnerHUD)
 		{
-			FHUDPackage HUDPackage;
+			
 			if(EquippedWeapon)
 			{
 				HUDPackage.CrosshairCentre = EquippedWeapon->CrosshairCentre;

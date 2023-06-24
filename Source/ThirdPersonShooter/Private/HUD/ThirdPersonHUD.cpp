@@ -18,37 +18,37 @@ void AThirdPersonHUD::DrawHUD()
 		if(HUDPackage.CrosshairCentre)
 		{
 			const FVector2D Spread(0.f,0.f);
-			DrawCrosshair(HUDPackage.CrosshairCentre, ViewportCentre, Spread);
+			DrawCrosshair(HUDPackage.CrosshairCentre, ViewportCentre, Spread, HUDPackage.CrosshairColour);
 		}
 		if(HUDPackage.CrosshairLeft)
 		{
 			const FVector2D Spread(-SpreadScaled,0.f);
-			DrawCrosshair(HUDPackage.CrosshairLeft, ViewportCentre,Spread);
+			DrawCrosshair(HUDPackage.CrosshairLeft, ViewportCentre,Spread, HUDPackage.CrosshairColour);
 		}
 		if(HUDPackage.CrosshairRight)
 		{
 			const FVector2D Spread(SpreadScaled,0.f);
-			DrawCrosshair(HUDPackage.CrosshairRight, ViewportCentre, Spread);
+			DrawCrosshair(HUDPackage.CrosshairRight, ViewportCentre, Spread, HUDPackage.CrosshairColour);
 		}
 		if(HUDPackage.CrosshairTop)
 		{
 			const FVector2D Spread(0.f,-SpreadScaled);
-			DrawCrosshair(HUDPackage.CrosshairTop, ViewportCentre, Spread);
+			DrawCrosshair(HUDPackage.CrosshairTop, ViewportCentre, Spread, HUDPackage.CrosshairColour);
 		}
 		if(HUDPackage.CrosshairBottom)
 		{
 			const FVector2D Spread(0.f,SpreadScaled);
-			DrawCrosshair(HUDPackage.CrosshairBottom, ViewportCentre, Spread);
+			DrawCrosshair(HUDPackage.CrosshairBottom, ViewportCentre, Spread, HUDPackage.CrosshairColour);
 		}
 	}
 	
 }
 
-void AThirdPersonHUD::DrawCrosshair(UTexture2D* Texture, FVector2D ViewportCentre, FVector2D Spread)
+void AThirdPersonHUD::DrawCrosshair(UTexture2D* Texture, FVector2D ViewportCentre, FVector2D Spread, FLinearColor Color)
 {
 	const float TextureWidth = Texture->GetSizeX();
 	const float TextureHeight = Texture->GetSizeY();
 	const FVector2D TextureDrawPoint(ViewportCentre.X - (TextureWidth/2.f) + Spread.X, ViewportCentre.Y - (TextureHeight/2.f) + Spread.Y);
 
-	DrawTexture(Texture, TextureDrawPoint.X, TextureDrawPoint.Y, TextureWidth, TextureHeight, 0.f, 0.f, 1.f, 1.f, FLinearColor::White);
+	DrawTexture(Texture, TextureDrawPoint.X, TextureDrawPoint.Y, TextureWidth, TextureHeight, 0.f, 0.f, 1.f, 1.f, Color);
 }

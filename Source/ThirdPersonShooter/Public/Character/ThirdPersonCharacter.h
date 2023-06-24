@@ -6,6 +6,7 @@
 #include "InputAction.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/CrosshairInteractInterface.h"
 #include "ThirdPersonCharacter.generated.h"
 
 class UInputAction;
@@ -13,7 +14,7 @@ struct FInputActionValue;
 class UInputMappingContext;
 
 UCLASS()
-class THIRDPERSONSHOOTER_API AThirdPersonCharacter : public ACharacter
+class THIRDPERSONSHOOTER_API AThirdPersonCharacter : public ACharacter, public ICrosshairInteractInterface
 {
 	GENERATED_BODY()
 
