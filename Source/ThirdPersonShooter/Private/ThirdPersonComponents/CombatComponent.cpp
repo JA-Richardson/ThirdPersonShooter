@@ -104,6 +104,13 @@ void UCombatComponent::CrosshairTrace(FHitResult& OutHitResult)
 	if(bScreenToWorld)
 	{
 		FVector TraceStart = CrosshairWorldPosition;
+
+		if(OwnerCharacter)
+		{
+			float DistanceToCharacter = (OwnerCharacter->GetActorLocation() - TraceStart).Size();
+			TraceStart += CrosshairWorldDirection * (DistanceToCharacter + 100.f);
+		}
+		
 		FVector TraceEnd = CrosshairWorldPosition + CrosshairWorldDirection * TRACE_LENGTH;
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(OwnerCharacter);

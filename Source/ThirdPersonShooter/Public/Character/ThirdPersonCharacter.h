@@ -103,6 +103,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Aim Offset")
 	class UAnimMontage* FireMontage;
 
+	void HideCamera();
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float CameraThreshold = 200.f;
+
 public:
 	
 };

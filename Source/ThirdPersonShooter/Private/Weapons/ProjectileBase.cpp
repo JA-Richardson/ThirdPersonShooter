@@ -3,6 +3,7 @@
 
 #include "Weapons/ProjectileBase.h"
 
+#include "Character/ThirdPersonCharacter.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -61,7 +62,11 @@ void AProjectileBase::BeginPlay()
 void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
-	
+	AThirdPersonCharacter* Character = Cast<AThirdPersonCharacter>(OtherActor);
+	if(Character)
+	{
+		;
+	}
 	Destroy();
 }
 
