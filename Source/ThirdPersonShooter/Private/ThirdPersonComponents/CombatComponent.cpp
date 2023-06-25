@@ -85,7 +85,7 @@ void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& H
 	EquippedWeapon->Fire(HitLocation);
 	if(GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Firing"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Firing"));
 	}
 }
 

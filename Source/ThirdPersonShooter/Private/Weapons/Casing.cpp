@@ -57,7 +57,7 @@ float ACasing::ShellSpeed()
 	float r = ShellEjectSpeed = RandRange(5, 10);
 	if(GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Shell Speed: %f"), ShellEjectSpeed));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Shell Speed: %f"), ShellEjectSpeed));
 	}
 	return r;
 }

@@ -17,6 +17,7 @@
 #include "Util/ColorConstants.h"
 #include "Weapons/WeaponBase.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "ThirdPersonShooter/ThirdPersonShooter.h"
 
 // Sets default values
 AThirdPersonCharacter::AThirdPersonCharacter()
@@ -47,6 +48,7 @@ AThirdPersonCharacter::AThirdPersonCharacter()
 
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	GetMesh()->SetCollisionObjectType(ECC_SkeletalMesh);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 }
@@ -282,6 +284,11 @@ void AThirdPersonCharacter::HideCamera()
 			Combat->EquippedWeapon->GetWeaponMesh()->bOwnerNoSee = false;
 		}
 	}
+	
+}
+
+void AThirdPersonCharacter::OnRep_Health()
+{
 	
 }
 
