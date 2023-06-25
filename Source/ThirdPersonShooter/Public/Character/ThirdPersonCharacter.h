@@ -110,7 +110,7 @@ private:
 	//Player Health
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
 	float MaxHealth = 100.f;
-	UPROPERTY(ReplicatedUsing = OnRep_Health, Category = "Player Stats")
+	UPROPERTY(ReplicatedUsing = OnRep_Health)
 	float Health = 100.f;
 
 	UFUNCTION()
