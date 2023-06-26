@@ -21,6 +21,7 @@ class THIRDPERSONSHOOTER_API AThirdPersonCharacter : public ACharacter, public I
 public:
 	// Sets default values for this character's properties
 	AThirdPersonCharacter();
+	
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -74,9 +75,14 @@ protected:
 	UInputAction* FireAction;
 	void Fire();
 	void FireEnd();
-
 	void AimOffset(float DeltaTime);
 	
+	UFUNCTION()
+	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	void UpdateHUDHealth();
+
+	UPROPERTY(ReplicatedUsing = OnRep_Health, EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+	float Health = 100.f;
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
@@ -110,11 +116,13 @@ private:
 	//Player Health
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
 	float MaxHealth = 100.f;
-	UPROPERTY(ReplicatedUsing = OnRep_Health)
-	float Health = 100.f;
+	
 
 	UFUNCTION()
 	void OnRep_Health();
+
+	
+	class AThirdPersonPlayerController* ThirdPersonPlayerController;
 public:
 	
 };

@@ -32,8 +32,6 @@ AProjectileBase::AProjectileBase()
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = false;
 	
-	
-	
 }
 
 // Called when the game starts or when spawned
@@ -67,6 +65,7 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	AThirdPersonCharacter* Character = Cast<AThirdPersonCharacter>(OtherActor);
 	if(Character)
 	{
+		
 		if(GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Collision with character")));

@@ -17,6 +17,7 @@
 #include "Util/ColorConstants.h"
 #include "Weapons/WeaponBase.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "PlayerController/ThirdPersonPlayerController.h"
 #include "ThirdPersonShooter/ThirdPersonShooter.h"
 
 // Sets default values
@@ -52,12 +53,46 @@ AThirdPersonCharacter::AThirdPersonCharacter()
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 }
+// Called when the game starts or when spawned
+void AThirdPersonCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UpdateHUDHealth();
+	if(HasAuthority())
+	{
+		OnTakeAnyDamage.AddDynamic(this, &AThirdPersonCharacter::ReceiveDamage);
+	}
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController)
+	{
+		if(UEnhancedInputLocalPlayerSubsystem* LocalPlayerSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			if(LocalPlayerSubsystem)
+			{
+				LocalPlayerSubsystem->AddMappingContext(CharacterContext, 0);
+			}
+		}
+	}
+	
+}
+void AThirdPersonCharacter::UpdateHUDHealth()
+{
+	ThirdPersonPlayerController = ThirdPersonPlayerController == nullptr ? Cast<AThirdPersonPlayerController>(Controller) : ThirdPersonPlayerController;
+	if(ThirdPersonPlayerController)
+	{
+		ThirdPersonPlayerController->SetHUDHealth(Health, MaxHealth);
+	}
+}
+
 
 void AThirdPersonCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME_CONDITION(AThirdPersonCharacter, OverlappingWeapon, COND_OwnerOnly);
+	DOREPLIFETIME(AThirdPersonCharacter, Health);
 }
 
 void AThirdPersonCharacter::PostInitializeComponents()
@@ -73,35 +108,12 @@ void AThirdPersonCharacter::PlayFireMontage(bool bAiming)
 {
 	
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	
-	
-		AnimInstance->Montage_Play(FireMontage);
-		FName SectionName;
-		SectionName = bAiming? FName("RifleADS") : FName("RifleHip");
-		AnimInstance->Montage_JumpToSection(SectionName, FireMontage);
-	
-		
-	
+	AnimInstance->Montage_Play(FireMontage);
+	FName SectionName;
+	SectionName = bAiming? FName("RifleADS") : FName("RifleHip");
+	AnimInstance->Montage_JumpToSection(SectionName, FireMontage);
 }
 
-// Called when the game starts or when spawned
-void AThirdPersonCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if (PlayerController)
-	{
-		if(UEnhancedInputLocalPlayerSubsystem* LocalPlayerSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			if(LocalPlayerSubsystem)
-			{
-				LocalPlayerSubsystem->AddMappingContext(CharacterContext, 0);
-			}
-		}
-	}
-	
-}
 
 // Called every frame
 void AThirdPersonCharacter::Tick(float DeltaTime)
@@ -232,6 +244,14 @@ void AThirdPersonCharacter::AimOffset(float DeltaTime)
 	
 }
 
+void AThirdPersonCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
+	AController* InstigatedBy, AActor* DamageCauser)
+{
+	Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
+	UpdateHUDHealth();
+	
+}
+
 void AThirdPersonCharacter::SetOverlappingWeapon(AWeaponBase* Weapon)
 {
 	if(OverlappingWeapon)
@@ -289,7 +309,8 @@ void AThirdPersonCharacter::HideCamera()
 
 void AThirdPersonCharacter::OnRep_Health()
 {
-	
+	UpdateHUDHealth();
+	//Hit react montage goes here
 }
 
 void AThirdPersonCharacter::ServerInteract_Implementation()

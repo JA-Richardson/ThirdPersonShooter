@@ -3,7 +3,24 @@
 
 #include "HUD/ThirdPersonHUD.h"
 
+#include "Blueprint/UserWidget.h"
+#include "HUD/CharacterOverlay.h"
 
+void AThirdPersonHUD::BeginPlay()
+{
+	Super::BeginPlay();
+	AddCharacterOverlay();
+}
+
+void AThirdPersonHUD::AddCharacterOverlay()
+{
+	APlayerController* PlayerController = GetOwningPlayerController();
+	if(PlayerController && CharacterOverlayClass)
+	{
+		CharacterOverlay = CreateWidget<UCharacterOverlay>(PlayerController, CharacterOverlayClass);
+		CharacterOverlay->AddToViewport();
+	}
+}
 void AThirdPersonHUD::DrawHUD()
 {
 	Super::DrawHUD();
@@ -43,6 +60,8 @@ void AThirdPersonHUD::DrawHUD()
 	}
 	
 }
+
+
 
 void AThirdPersonHUD::DrawCrosshair(UTexture2D* Texture, FVector2D ViewportCentre, FVector2D Spread, FLinearColor Color)
 {
