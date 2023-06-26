@@ -8,8 +8,10 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
 #include "ThirdPersonComponents/CombatComponent.h"
-#include "ToolContextInterfaces.h"
+//#include "ToolContextInterfaces.h"
+#include "TimerManager.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameModes/ThirdPersonGameMode.h"
@@ -58,7 +60,7 @@ AThirdPersonCharacter::AThirdPersonCharacter()
 void AThirdPersonCharacter::Elim()
 {
 	MulticastElim();
-	GetWorldTimerManager().SetTimer(ElimTimer, this, &AThirdPersonCharacter::ElimTimerFinished, ElimDelay, false);
+	GetWorldTimerManager().SetTimer(ElimTimer, this, &AThirdPersonCharacter::ElimTimerFinished, ElimDelay);
 }
 
 void AThirdPersonCharacter::MulticastElim_Implementation()
@@ -272,8 +274,27 @@ void AThirdPersonCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, co
 {
 	Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
 	UpdateHUDHealth();
-	if(Health <= 0.f)
+	if(Health == 0.f)
 	{
+		//disable physics
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+		GetMesh()->SetSimulatePhysics(true);
+		//disable movement
+		GetCharacterMovement()->DisableMovement();
+		//disable combat
+		if(Combat)
+		{
+			Combat->SetAiming(false);
+			Combat->FireButtonPressed(false);
+		}
+		//disable input
+		DisableInput(ThirdPersonPlayerController);
+		//disable camera
+		ThirdPersonPlayerController->SetViewTargetWithBlend(nullptr, 0.5f, EViewTargetBlendFunction::VTBlend_Cubic);
+		//disable camera rotation
+		
+		
 		AThirdPersonGameMode* GameMode = GetWorld()->GetAuthGameMode<AThirdPersonGameMode>();
 		if(GameMode)
 		{

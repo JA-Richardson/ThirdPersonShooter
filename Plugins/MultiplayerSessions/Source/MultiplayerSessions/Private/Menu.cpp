@@ -6,6 +6,8 @@
 #include "MultiplayerSessionsSubsystem.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
+#include "Engine/Engine.h"
+#include "Engine/GameInstance.h"
 
 void UMenu::MenuSetup(int32 NumberOfPublicConnections, FString TypeOfMatch, FString LobbyPath)
 {

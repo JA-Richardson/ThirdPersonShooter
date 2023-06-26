@@ -3,6 +3,7 @@
 
 #include "GameModes/ThirdPersonGameMode.h"
 
+#include "Character/ThirdPersonCharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
@@ -10,7 +11,10 @@
 void AThirdPersonGameMode::PlayerEliminated(AThirdPersonCharacter* ElimmedCharacter,
                                             AThirdPersonPlayerController* ElimmedPlayerController, AThirdPersonPlayerController* EliminatorController)
 {
-	
+	if (ElimmedCharacter)
+	{
+		ElimmedCharacter->Elim();
+	}
 }
 
 void AThirdPersonGameMode::RequestRespawn(ACharacter* ElimmedCharacter, AController* ElimmedController)
