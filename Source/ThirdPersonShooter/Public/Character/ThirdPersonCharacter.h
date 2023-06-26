@@ -37,6 +37,9 @@ public:
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
 	void PlayFireMontage(bool bAiming);
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	void Elim();
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastElim();
 
 
 
@@ -123,6 +126,12 @@ private:
 
 	
 	class AThirdPersonPlayerController* ThirdPersonPlayerController;
+
+	FTimerHandle ElimTimer;
+	UPROPERTY(EditDefaultsOnly, Category = "Player Stats")
+	float ElimDelay = 3.f;
+
+	void ElimTimerFinished();
 public:
 	
 };

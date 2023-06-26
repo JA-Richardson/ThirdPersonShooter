@@ -12,6 +12,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameModes/ThirdPersonGameMode.h"
 #include "Net/UnrealNetwork.h"
 #include "ThirdPersonComponents/CombatComponent.h"
 #include "Util/ColorConstants.h"
@@ -53,6 +54,26 @@ AThirdPersonCharacter::AThirdPersonCharacter()
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 }
+
+void AThirdPersonCharacter::Elim()
+{
+	MulticastElim();
+	GetWorldTimerManager().SetTimer(ElimTimer, this, &AThirdPersonCharacter::ElimTimerFinished, ElimDelay, false);
+}
+
+void AThirdPersonCharacter::MulticastElim_Implementation()
+{
+}
+
+void AThirdPersonCharacter::ElimTimerFinished()
+{
+	AThirdPersonGameMode* GameMode = GetWorld()->GetAuthGameMode<AThirdPersonGameMode>();
+	if(GameMode)
+	{
+		GameMode->RequestRespawn(this, Controller);
+	}
+}
+
 // Called when the game starts or when spawned
 void AThirdPersonCharacter::BeginPlay()
 {
@@ -113,6 +134,8 @@ void AThirdPersonCharacter::PlayFireMontage(bool bAiming)
 	SectionName = bAiming? FName("RifleADS") : FName("RifleHip");
 	AnimInstance->Montage_JumpToSection(SectionName, FireMontage);
 }
+
+
 
 
 // Called every frame
@@ -249,6 +272,17 @@ void AThirdPersonCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, co
 {
 	Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
 	UpdateHUDHealth();
+	if(Health <= 0.f)
+	{
+		AThirdPersonGameMode* GameMode = GetWorld()->GetAuthGameMode<AThirdPersonGameMode>();
+		if(GameMode)
+		{
+			ThirdPersonPlayerController = ThirdPersonPlayerController == nullptr ? Cast<AThirdPersonPlayerController>(Controller) : ThirdPersonPlayerController;
+			AThirdPersonPlayerController* AttackerController = Cast<AThirdPersonPlayerController>(InstigatedBy);
+			GameMode->PlayerEliminated(this, ThirdPersonPlayerController, AttackerController);
+		}
+	}
+	
 	
 }
 
@@ -312,6 +346,8 @@ void AThirdPersonCharacter::OnRep_Health()
 	UpdateHUDHealth();
 	//Hit react montage goes here
 }
+
+
 
 void AThirdPersonCharacter::ServerInteract_Implementation()
 {
