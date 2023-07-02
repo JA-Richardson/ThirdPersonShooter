@@ -19,16 +19,9 @@ class THIRDPERSONSHOOTER_API AThirdPersonCharacter : public ACharacter, public I
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AThirdPersonCharacter();
-	
-
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostInitializeComponents() override;
 	void SetOverlappingWeapon(AWeaponBase* Weapon);
@@ -41,64 +34,68 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastElim();
 
-
+	FORCEINLINE float GetHealth() const { return Health; }
+	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
 
 protected:
-	// Called when the game starts or when spawned
+	
 	virtual void BeginPlay() override;
+
+	//Movement and Interaction
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
 	UInputMappingContext* CharacterContext;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
 	UInputAction* MoveAction;
 	void Move(const FInputActionValue& Value);
-	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
 	UInputAction* LookAction;
 	void Look(const FInputActionValue& Value);
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
 	UInputAction* JumpAction;
 	void Jump();
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
+	UInputAction* CrouchAction;
+	void CrouchStart();
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
 	UInputAction* InteractAction;
 	void Interact(const FInputActionValue& Value);
 	
+	//Aiming and Firing
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
 	UInputAction* AimAction;
 	void AimStart(const FInputActionValue& Value);
 	void AimEnd(const FInputActionValue& Value);
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
-	UInputAction* CrouchAction;
-	void CrouchStart();
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input Mapping")
 	UInputAction* FireAction;
 	void Fire();
 	void FireEnd();
 	void AimOffset(float DeltaTime);
 	
+	//Damage and Health
 	UFUNCTION()
-	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
+	                   class AController* InstigatedBy, AActor* DamageCauser);
 	void UpdateHUDHealth();
-
 	UPROPERTY(ReplicatedUsing = OnRep_Health, EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
 	float Health = 100.f;
+
 private:
+
+	//Camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
-
+	void HideCamera();
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float CameraThreshold = 200.f;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UWidgetComponent* OverheadWidget;
 
 	UPROPERTY(ReplicatedUsing = OnRep_OverlappingWeapon)
 	class AWeaponBase* OverlappingWeapon;
-	
+
 	UFUNCTION()
 	void OnRep_OverlappingWeapon(AWeaponBase* LastWeapon);
 	UPROPERTY(VisibleAnywhere)
@@ -111,27 +108,18 @@ private:
 	FRotator StartingAimRotation;
 	UPROPERTY(EditAnywhere, Category = "Aim Offset")
 	class UAnimMontage* FireMontage;
-
-	void HideCamera();
-	UPROPERTY(EditAnywhere, Category = "Camera")
-	float CameraThreshold = 200.f;
-
-	//Player Health
+	
+	//Player Health and Damage
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
 	float MaxHealth = 100.f;
-	
-
 	UFUNCTION()
 	void OnRep_Health();
-
-	
-	class AThirdPersonPlayerController* ThirdPersonPlayerController;
-
 	FTimerHandle ElimTimer;
 	UPROPERTY(EditDefaultsOnly, Category = "Player Stats")
 	float ElimDelay = 3.f;
-
 	void ElimTimerFinished();
+
+	class AThirdPersonPlayerController* ThirdPersonPlayerController;
+
 public:
-	
 };

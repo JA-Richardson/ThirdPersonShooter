@@ -3,6 +3,7 @@
 
 #include "PlayerController/ThirdPersonPlayerController.h"
 
+#include "Character/ThirdPersonCharacter.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "HUD/CharacterOverlay.h"
@@ -12,6 +13,19 @@ void AThirdPersonPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	ThirdPersonHUD = Cast<AThirdPersonHUD>(GetHUD());
+}
+
+void AThirdPersonPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	AThirdPersonCharacter* TPCharacter = Cast<AThirdPersonCharacter>(InPawn);
+	if(TPCharacter)
+	{
+		SetHUDHealth(TPCharacter->GetHealth(), TPCharacter->GetMaxHealth());
+	}
+
+	
 }
 
 void AThirdPersonPlayerController::SetHUDHealth(float Health, float MaxHealth)
@@ -29,5 +43,7 @@ void AThirdPersonPlayerController::SetHUDHealth(float Health, float MaxHealth)
 		
 	
 }
+
+
 
 
