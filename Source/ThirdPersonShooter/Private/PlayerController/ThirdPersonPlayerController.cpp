@@ -44,6 +44,18 @@ void AThirdPersonPlayerController::SetHUDHealth(float Health, float MaxHealth)
 	
 }
 
+void AThirdPersonPlayerController::SetHUDScore(float Score)
+{
+	ThirdPersonHUD = ThirdPersonHUD == nullptr ? Cast<AThirdPersonHUD>(GetHUD()) : ThirdPersonHUD;
+	const bool bHUDValid = ThirdPersonHUD && ThirdPersonHUD->CharacterOverlay && ThirdPersonHUD->CharacterOverlay->ScoreValue;
+	if(bHUDValid)
+	{
+		const FString ScoreText = FString::Printf(TEXT("%d"), FMath::CeilToInt(Score));
+		ThirdPersonHUD->CharacterOverlay->ScoreValue->SetText(FText::FromString(ScoreText));
+	}
+	
+}
+
 
 
 

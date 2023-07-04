@@ -37,6 +37,8 @@ public:
 	FORCEINLINE float GetHealth() const { return Health; }
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
 
+	class AThirdPersonPlayerState* PlayerState;
+
 protected:
 	
 	virtual void BeginPlay() override;
@@ -78,6 +80,8 @@ protected:
 	void UpdateHUDHealth();
 	UPROPERTY(ReplicatedUsing = OnRep_Health, EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
 	float Health = 100.f;
+	//Poll and initialise any data for the HUD
+	void PollInit();
 
 private:
 

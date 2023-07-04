@@ -7,10 +7,21 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
+#include "PlayerController/ThirdPersonPlayerController.h"
+#include "PlayerState/ThirdPersonPlayerState.h"
+
 
 void AThirdPersonGameMode::PlayerEliminated(AThirdPersonCharacter* ElimmedCharacter,
                                             AThirdPersonPlayerController* ElimmedPlayerController, AThirdPersonPlayerController* EliminatorController)
 {
+	AThirdPersonPlayerState* AttackerState = EliminatorController ? Cast<AThirdPersonPlayerState>(EliminatorController->PlayerState) : nullptr;
+	AThirdPersonPlayerState* VictimState = ElimmedPlayerController ? Cast<AThirdPersonPlayerState>(ElimmedPlayerController->PlayerState) : nullptr;
+
+	if(AttackerState && AttackerState != VictimState)
+	{
+		AttackerState->IncreaseScore(1.f);
+	}
+	
 	if (ElimmedCharacter)
 	{
 		ElimmedCharacter->Elim();

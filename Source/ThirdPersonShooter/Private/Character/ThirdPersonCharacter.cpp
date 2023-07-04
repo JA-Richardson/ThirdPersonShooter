@@ -21,6 +21,7 @@
 #include "Weapons/WeaponBase.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PlayerController/ThirdPersonPlayerController.h"
+#include "PlayerState/ThirdPersonPlayerState.h"
 #include "ThirdPersonShooter/ThirdPersonShooter.h"
 
 // Sets default values
@@ -55,6 +56,14 @@ AThirdPersonCharacter::AThirdPersonCharacter()
 	GetMesh()->SetCollisionObjectType(ECC_SkeletalMesh);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+}
+
+// Called every frame
+void AThirdPersonCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	AimOffset(DeltaTime);
+	HideCamera();
 }
 
 void AThirdPersonCharacter::Elim()
@@ -100,12 +109,25 @@ void AThirdPersonCharacter::BeginPlay()
 	}
 	
 }
+
 void AThirdPersonCharacter::UpdateHUDHealth()
 {
 	ThirdPersonPlayerController = ThirdPersonPlayerController == nullptr ? Cast<AThirdPersonPlayerController>(Controller) : ThirdPersonPlayerController;
 	if(ThirdPersonPlayerController)
 	{
 		ThirdPersonPlayerController->SetHUDHealth(Health, MaxHealth);
+	}
+}
+
+void AThirdPersonCharacter::PollInit()
+{
+	if (PlayerState == nullptr)
+	{
+		PlayerState = GetPlayerState<AThirdPersonPlayerState>();
+		if(PlayerState)
+		{
+			PlayerState->IncreaseScore(0.f);
+		}
 	}
 }
 
@@ -138,16 +160,6 @@ void AThirdPersonCharacter::PlayFireMontage(bool bAiming)
 }
 
 
-
-
-// Called every frame
-void AThirdPersonCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	AimOffset(DeltaTime);
-	HideCamera();
-	
-}
 
 void AThirdPersonCharacter::Move(const FInputActionValue& Value)
 {
