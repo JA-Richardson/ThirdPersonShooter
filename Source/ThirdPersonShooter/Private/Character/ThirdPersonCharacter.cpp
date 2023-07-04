@@ -177,10 +177,21 @@ void AThirdPersonCharacter::Move(const FInputActionValue& Value)
 void AThirdPersonCharacter::Look(const FInputActionValue& Value)
 {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
-	if(Controller)
+	if(IsAiming())
 	{
-		AddControllerYawInput(LookAxisValue.X);
-		AddControllerPitchInput(LookAxisValue.Y);
+		if(Controller)
+		{
+			AddControllerYawInput(LookAxisValue.X * 0.5f);
+			AddControllerPitchInput(LookAxisValue.Y * 0.5f);
+		}
+	}
+	else
+	{
+		if(Controller)
+		{
+			AddControllerYawInput(LookAxisValue.X);
+			AddControllerPitchInput(LookAxisValue.Y);
+		}
 	}
 }
 
