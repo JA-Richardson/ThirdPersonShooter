@@ -127,6 +127,7 @@ void AThirdPersonCharacter::PollInit()
 		if(PlayerState)
 		{
 			PlayerState->IncreaseScore(0.f);
+			PlayerState->IncreaseDefeat(0);
 		}
 	}
 }

@@ -87,5 +87,19 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	TSubclassOf<class ACasing> CasingClass;
 
+	UPROPERTY(EditAnywhere, ReplicatedUsing = OnRep_Ammo, Category = "Weapon Properties")
+	int32 Ammo;
+	UFUNCTION()
+	void OnRep_Ammo();
+
+	void SpendRound();
+
+	UPROPERTY(EditAnywhere)
+	int32 MagSize;
+	UPROPERTY()
+	class AThirdPersonCharacter* Character;
+	UPROPERTY()
+	class AThirdPersonPlayerController* PlayerController;
+
 	
 };

@@ -56,6 +56,30 @@ void AThirdPersonPlayerController::SetHUDScore(float Score)
 	
 }
 
+void AThirdPersonPlayerController::SetHUDDefeat(int32 Defeat)
+{
+
+	ThirdPersonHUD = ThirdPersonHUD == nullptr ? Cast<AThirdPersonHUD>(GetHUD()) : ThirdPersonHUD;
+	const bool bHUDValid = ThirdPersonHUD && ThirdPersonHUD->CharacterOverlay && ThirdPersonHUD->CharacterOverlay->DefeatValue;
+	if(bHUDValid)
+	{
+		const FString DefeatText = FString::Printf(TEXT("%d"), Defeat);
+		ThirdPersonHUD->CharacterOverlay->DefeatValue->SetText(FText::FromString(DefeatText));
+	}
+}
+
+void AThirdPersonPlayerController::SetHUDWeaponAmmo(int32 CurrentAmmo)
+{
+
+	ThirdPersonHUD = ThirdPersonHUD == nullptr ? Cast<AThirdPersonHUD>(GetHUD()) : ThirdPersonHUD;
+	const bool bHUDValid = ThirdPersonHUD && ThirdPersonHUD->CharacterOverlay && ThirdPersonHUD->CharacterOverlay->AmmoValue;
+	if(bHUDValid)
+	{
+		const FString AmmoText = FString::Printf(TEXT("%d"), CurrentAmmo);
+		ThirdPersonHUD->CharacterOverlay->AmmoValue->SetText(FText::FromString(AmmoText));
+	}
+}
+
 
 
 

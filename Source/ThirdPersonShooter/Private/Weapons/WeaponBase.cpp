@@ -13,6 +13,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Weapons/Casing.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "PlayerController/ThirdPersonPlayerController.h"
 
 
 // Sets default values
@@ -59,6 +60,7 @@ void AWeaponBase::Fire(const FVector& HitTarget)
 			}
 		}
 	}
+	SpendRound();
 }
 
 // Called when the game starts or when spawned
@@ -92,6 +94,7 @@ void AWeaponBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AWeaponBase, WeaponState);
+	DOREPLIFETIME(AWeaponBase, Ammo);
 	
 }
 
@@ -135,6 +138,33 @@ void AWeaponBase::OnRep_WeaponState()
 		ShowPickupWidget(false);
 		
 		break;
+	}
+}
+
+void AWeaponBase::OnRep_Ammo()
+{
+	Character = Character == nullptr ? Cast<AThirdPersonCharacter>(GetOwner()) : Character;
+	if(Character)
+	{
+		PlayerController = PlayerController == nullptr ? Cast<AThirdPersonPlayerController>(Character->Controller) : PlayerController;
+		if (PlayerController)
+		{
+			PlayerController->SetHUDWeaponAmmo(Ammo);
+		}
+	}
+}
+
+void AWeaponBase::SpendRound()
+{
+	Ammo--;
+	Character = Character == nullptr ? Cast<AThirdPersonCharacter>(GetOwner()) : Character;
+	if(Character)
+	{
+		PlayerController = PlayerController == nullptr ? Cast<AThirdPersonPlayerController>(Character->Controller) : PlayerController;
+		if (PlayerController)
+		{
+			PlayerController->SetHUDWeaponAmmo(Ammo);
+		}
 	}
 }
 

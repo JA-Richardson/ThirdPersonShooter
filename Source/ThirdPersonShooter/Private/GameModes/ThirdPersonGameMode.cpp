@@ -21,6 +21,10 @@ void AThirdPersonGameMode::PlayerEliminated(AThirdPersonCharacter* ElimmedCharac
 	{
 		AttackerState->IncreaseScore(1.f);
 	}
+	if(VictimState)
+	{
+		VictimState->IncreaseDefeat(1);
+	}
 	
 	if (ElimmedCharacter)
 	{

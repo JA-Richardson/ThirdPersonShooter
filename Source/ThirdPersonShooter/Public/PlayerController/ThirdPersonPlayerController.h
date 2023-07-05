@@ -16,10 +16,13 @@ class THIRDPERSONSHOOTER_API AThirdPersonPlayerController : public APlayerContro
 public:
 	void SetHUDHealth(float Health, float MaxHealth);
 	void SetHUDScore(float Score);
+	void SetHUDDefeat(int32 Defeat);
+	void SetHUDWeaponAmmo(int32 CurrentAmmo);
 	virtual void OnPossess(APawn* InPawn) override;
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	UPROPERTY()
 	class AThirdPersonHUD* ThirdPersonHUD;
 };

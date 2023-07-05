@@ -40,8 +40,11 @@ protected:
 	void SetHudCrosshair(float DeltaTime);
 	
 private:
+	UPROPERTY()
 	class AThirdPersonCharacter* OwnerCharacter;
+	UPROPERTY()
 	class AThirdPersonPlayerController* OwnerController;
+	UPROPERTY()
 	class AThirdPersonHUD* OwnerHUD;
 	UPROPERTY(Replicated)
 	class AWeaponBase* EquippedWeapon;

@@ -36,8 +36,8 @@ public:
 
 	FORCEINLINE float GetHealth() const { return Health; }
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
-
-	class AThirdPersonPlayerState* PlayerState;
+	
+	 class AThirdPersonPlayerState* PlayerState;
 
 protected:
 	
@@ -122,7 +122,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Player Stats")
 	float ElimDelay = 3.f;
 	void ElimTimerFinished();
-
+	UPROPERTY()
 	class AThirdPersonPlayerController* ThirdPersonPlayerController;
 
 public:
