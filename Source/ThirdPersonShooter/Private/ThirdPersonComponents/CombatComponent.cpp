@@ -222,7 +222,10 @@ void UCombatComponent::ServerSetAiming_Implementation(bool bAiming)
 void UCombatComponent::EquipWeapon(class AWeaponBase* WeaponToEquip)
 {
 	if(OwnerCharacter == nullptr || WeaponToEquip == nullptr) return;
-
+	if(EquippedWeapon)
+	{
+		EquippedWeapon->Dropped();
+	}
 	EquippedWeapon = WeaponToEquip;
 	EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
 	const USkeletalMeshSocket* HandSocket = OwnerCharacter->GetMesh()->GetSocketByName(FName("hand_r_socket"));
@@ -231,6 +234,7 @@ void UCombatComponent::EquipWeapon(class AWeaponBase* WeaponToEquip)
 		HandSocket->AttachActor(EquippedWeapon, OwnerCharacter->GetMesh());
 	}
 	EquippedWeapon->SetOwner(OwnerCharacter);
+	EquippedWeapon->SetHUDAmmo();
 	
 }
 

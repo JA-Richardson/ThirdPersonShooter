@@ -69,6 +69,9 @@ void AWeaponBase::Dropped()
 	FDetachmentTransformRules DetachRules(EDetachmentRule::KeepWorld, true);
 	WeaponMesh->DetachFromComponent(DetachRules);
 	SetOwner(nullptr);
+	Owner = nullptr;
+	PlayerController = nullptr;
+	
 }
 
 // Called when the game starts or when spawned
@@ -104,6 +107,32 @@ void AWeaponBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	DOREPLIFETIME(AWeaponBase, WeaponState);
 	DOREPLIFETIME(AWeaponBase, Ammo);
 	
+}
+
+void AWeaponBase::OnRep_Owner()
+{
+	Super::OnRep_Owner();
+	if(Owner == nullptr)
+	{
+		Owner = nullptr;
+		PlayerController = nullptr;
+	}
+	else
+		SetHUDAmmo();
+	
+}
+
+void AWeaponBase::SetHUDAmmo()
+{
+	Character = Character == nullptr ? Cast<AThirdPersonCharacter>(GetOwner()) : Character;
+	if(Character)
+	{
+		PlayerController = PlayerController == nullptr ? Cast<AThirdPersonPlayerController>(Character->Controller) : PlayerController;
+		if (PlayerController)
+		{
+			PlayerController->SetHUDWeaponAmmo(Ammo);
+		}
+	}
 }
 
 void AWeaponBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -174,28 +203,13 @@ void AWeaponBase::OnRep_WeaponState()
 void AWeaponBase::OnRep_Ammo()
 {
 	Character = Character == nullptr ? Cast<AThirdPersonCharacter>(GetOwner()) : Character;
-	if(Character)
-	{
-		PlayerController = PlayerController == nullptr ? Cast<AThirdPersonPlayerController>(Character->Controller) : PlayerController;
-		if (PlayerController)
-		{
-			PlayerController->SetHUDWeaponAmmo(Ammo);
-		}
-	}
+	SetHUDAmmo();
 }
 
 void AWeaponBase::SpendRound()
 {
 	Ammo--;
-	Character = Character == nullptr ? Cast<AThirdPersonCharacter>(GetOwner()) : Character;
-	if(Character)
-	{
-		PlayerController = PlayerController == nullptr ? Cast<AThirdPersonPlayerController>(Character->Controller) : PlayerController;
-		if (PlayerController)
-		{
-			PlayerController->SetHUDWeaponAmmo(Ammo);
-		}
-	}
+	SetHUDAmmo();
 }
 
 

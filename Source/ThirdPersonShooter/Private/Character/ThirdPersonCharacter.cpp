@@ -78,6 +78,10 @@ void AThirdPersonCharacter::Elim()
 
 void AThirdPersonCharacter::MulticastElim_Implementation()
 {
+	if(ThirdPersonPlayerController)
+	{
+		ThirdPersonPlayerController->SetHUDWeaponAmmo(0);
+	}
 }
 
 void AThirdPersonCharacter::ElimTimerFinished()
