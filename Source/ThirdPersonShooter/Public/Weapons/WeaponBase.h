@@ -34,6 +34,7 @@ public:
 	FORCEINLINE USphereComponent* GetAreaSphere() { return AreaSphere; }
 	virtual void Fire(const FVector& HitTarget);
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() { return WeaponMesh; }
+	void Dropped();
 
 	//Textures for weapon crosshair
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")

@@ -68,6 +68,10 @@ void AThirdPersonCharacter::Tick(float DeltaTime)
 
 void AThirdPersonCharacter::Elim()
 {
+	if(Combat && Combat->EquippedWeapon)
+	{
+		Combat->EquippedWeapon->Dropped();
+	}
 	MulticastElim();
 	GetWorldTimerManager().SetTimer(ElimTimer, this, &AThirdPersonCharacter::ElimTimerFinished, ElimDelay);
 }

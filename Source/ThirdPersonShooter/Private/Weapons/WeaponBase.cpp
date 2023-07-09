@@ -63,6 +63,14 @@ void AWeaponBase::Fire(const FVector& HitTarget)
 	SpendRound();
 }
 
+void AWeaponBase::Dropped()
+{
+	SetWeaponState(EWeaponState::EWS_Dropped);
+	FDetachmentTransformRules DetachRules(EDetachmentRule::KeepWorld, true);
+	WeaponMesh->DetachFromComponent(DetachRules);
+	SetOwner(nullptr);
+}
+
 // Called when the game starts or when spawned
 void AWeaponBase::BeginPlay()
 {
@@ -102,17 +110,17 @@ void AWeaponBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AAct
                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap"));
-	AThirdPersonCharacter* Character = Cast<AThirdPersonCharacter>(OtherActor);
-	if(Character)
+	AThirdPersonCharacter* Character1 = Cast<AThirdPersonCharacter>(OtherActor);
+	if(Character1)
 	{
-		Character->SetOverlappingWeapon(this);
+		Character1->SetOverlappingWeapon(this);
 	}
 }
 
 void AWeaponBase::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	AThirdPersonCharacter* Character = Cast<AThirdPersonCharacter>(OtherActor);
+	//AThirdPersonCharacter* Character = Cast<AThirdPersonCharacter>(OtherActor);
 	if(Character)
 	{
 		Character->SetOverlappingWeapon(nullptr);
@@ -126,18 +134,40 @@ void AWeaponBase::SetWeaponState(EWeaponState State)
 	case EWeaponState::EWS_Equipped:
 		ShowPickupWidget(false);
 		AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		WeaponMesh->SetSimulatePhysics(false);
+		WeaponMesh->SetEnableGravity(false);
 		break;
+	case EWeaponState::EWS_Dropped:
+		if(HasAuthority())
+		{
+			AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		}
+		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		WeaponMesh->SetSimulatePhysics(true);
+		WeaponMesh->SetEnableGravity(true);
+		break;
+	default: ;
 	}
 	
 }
 void AWeaponBase::OnRep_WeaponState()
 {
+	
 	switch(WeaponState)
 	{
 	case EWeaponState::EWS_Equipped:
 		ShowPickupWidget(false);
-		
+		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		WeaponMesh->SetSimulatePhysics(false);
+		WeaponMesh->SetEnableGravity(false);
 		break;
+	case EWeaponState::EWS_Dropped:
+		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		WeaponMesh->SetSimulatePhysics(true);
+		WeaponMesh->SetEnableGravity(true);
+		break;
+	default: ;
 	}
 }
 
