@@ -81,6 +81,7 @@ void AThirdPersonCharacter::MulticastElim_Implementation()
 	if(ThirdPersonPlayerController)
 	{
 		ThirdPersonPlayerController->SetHUDWeaponAmmo(0);
+		
 	}
 }
 
@@ -308,6 +309,8 @@ void AThirdPersonCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, co
 	UpdateHUDHealth();
 	if(Health == 0.f)
 	{
+		//disable input
+		DisableInput(ThirdPersonPlayerController);
 		//disable physics
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
@@ -320,12 +323,9 @@ void AThirdPersonCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, co
 			Combat->SetAiming(false);
 			Combat->FireButtonPressed(false);
 		}
-		//disable input
-		DisableInput(ThirdPersonPlayerController);
 		//disable camera
 		ThirdPersonPlayerController->SetViewTargetWithBlend(nullptr, 0.5f, EViewTargetBlendFunction::VTBlend_Cubic);
 		//disable camera rotation
-		
 		
 		AThirdPersonGameMode* GameMode = GetWorld()->GetAuthGameMode<AThirdPersonGameMode>();
 		if(GameMode)
