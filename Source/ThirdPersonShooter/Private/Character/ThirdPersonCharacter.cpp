@@ -93,6 +93,11 @@ void AThirdPersonCharacter::ElimTimerFinished()
 	}
 }
 
+bool AThirdPersonCharacter::IsWeaponEquipped()
+{
+	return(Combat && Combat->EquippedWeapon);
+}
+
 // Called when the game starts or when spawned
 void AThirdPersonCharacter::BeginPlay()
 {

@@ -37,7 +37,8 @@ public:
 	FORCEINLINE float GetHealth() const { return Health; }
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
 	
-	 class AThirdPersonPlayerState* PlayerState;
+	class AThirdPersonPlayerState* PlayerState;
+	bool IsWeaponEquipped();
 
 protected:
 	
@@ -124,6 +125,5 @@ private:
 	void ElimTimerFinished();
 	UPROPERTY()
 	class AThirdPersonPlayerController* ThirdPersonPlayerController;
-
-public:
+	
 };

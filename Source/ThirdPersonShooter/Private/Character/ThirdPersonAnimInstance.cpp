@@ -31,6 +31,7 @@ void UThirdPersonAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	bIsInAir = Character->GetCharacterMovement()->IsFalling();
 	bIsAccelerating = Character->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f ? true : false;
+	bWeaponEquipped = Character->IsWeaponEquipped();
 	bAiming = Character->IsAiming();
 	bIsCrouched = Character->bIsCrouched;
 
