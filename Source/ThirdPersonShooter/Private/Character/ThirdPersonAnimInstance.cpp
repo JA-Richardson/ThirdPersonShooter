@@ -2,8 +2,11 @@
 
 
 #include "Character/ThirdPersonAnimInstance.h"
+
+#include "ActorFactories/ActorFactory.h"
 #include "Character/ThirdPersonCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UThirdPersonAnimInstance::NativeInitializeAnimation()
 {
@@ -37,6 +40,14 @@ void UThirdPersonAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	AO_Yaw = Character->GetAO_Yaw();
 	AO_Pitch = Character->GetAO_Pitch();
+
+	FRotator AimRotation = Character->GetBaseAimRotation();
+	FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(Character->GetVelocity());
+	FRotator DeltaRot = UKismetMathLibrary::NormalizedDeltaRotator(AimRotation, MovementRotation);
+	DeltaRotation = FMath::RInterpTo(DeltaRotation, DeltaRot, DeltaSeconds, 15.f);
+	YawOffset = DeltaRotation.Yaw;
+	
+	
 
 	
 }

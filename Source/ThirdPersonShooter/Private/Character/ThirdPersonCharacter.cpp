@@ -256,9 +256,14 @@ void AThirdPersonCharacter::AimEnd(const FInputActionValue& Value)
 
 void AThirdPersonCharacter::CrouchStart()
 {
+	
 	if(bIsCrouched)
 	{
 		UnCrouch();
+	}
+	else
+	{
+		Crouch();
 	}
 	
 	

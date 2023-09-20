@@ -38,6 +38,10 @@ protected:
 	void MulticastFire(const FVector_NetQuantize& HitLocation);
 	void CrosshairTrace(FHitResult& OutHitResult);
 	void SetHudCrosshair(float DeltaTime);
+
+	UFUNCTION()
+	void OnRep_EquippedWeapon();
+	
 	
 private:
 	UPROPERTY()

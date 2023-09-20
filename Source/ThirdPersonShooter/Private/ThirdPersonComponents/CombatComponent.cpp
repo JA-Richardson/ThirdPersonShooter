@@ -196,6 +196,15 @@ void UCombatComponent::SetHudCrosshair(float DeltaTime)
 	
 }
 
+void UCombatComponent::OnRep_EquippedWeapon()
+{
+	if(EquippedWeapon && OwnerCharacter)
+	{
+		OwnerCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
+		OwnerCharacter->bUseControllerRotationYaw = true;
+	}
+}
+
 void UCombatComponent::InterpFOV(float DeltaTime)
 {
 	if(EquippedWeapon == nullptr) return;
@@ -235,6 +244,9 @@ void UCombatComponent::EquipWeapon(class AWeaponBase* WeaponToEquip)
 	}
 	EquippedWeapon->SetOwner(OwnerCharacter);
 	EquippedWeapon->SetHUDAmmo();
+	OwnerCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
+	OwnerCharacter->bUseControllerRotationYaw = true;
+	
 	
 }
 
