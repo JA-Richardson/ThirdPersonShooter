@@ -21,7 +21,7 @@ UCombatComponent::UCombatComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
+	AimWalkSpeed = 450.f;
 }
 
 
@@ -58,6 +58,10 @@ void UCombatComponent::SetAiming(bool bAiming)
 {
 	bIsAiming = bAiming;
 	ServerSetAiming(bAiming);
+	if(OwnerCharacter)
+	{
+		OwnerCharacter->GetCharacterMovement()->MaxWalkSpeed = bAiming ? AimWalkSpeed : BaseWalkSpeed;
+	}
 }
 
 void UCombatComponent::FireButtonPressed(bool bPressed)
@@ -226,6 +230,10 @@ void UCombatComponent::InterpFOV(float DeltaTime)
 void UCombatComponent::ServerSetAiming_Implementation(bool bAiming)
 {
 	bIsAiming = bAiming;
+	if(OwnerCharacter)
+	{
+		OwnerCharacter->GetCharacterMovement()->MaxWalkSpeed = bAiming ? AimWalkSpeed : BaseWalkSpeed;
+	}
 }
 
 void UCombatComponent::EquipWeapon(class AWeaponBase* WeaponToEquip)
