@@ -41,7 +41,7 @@ AThirdPersonCharacter::AThirdPersonCharacter()
 
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
-	bUseControllerRotationYaw = true;
+	bUseControllerRotationYaw = false;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -58,6 +58,9 @@ AThirdPersonCharacter::AThirdPersonCharacter()
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 
 	TurningInPlace = ETurningInPlace::ETIP_None;
+
+	NetUpdateFrequency = 66.f;
+	MinNetUpdateFrequency = 33.f;
 }
 
 // Called every frame
@@ -95,22 +98,7 @@ void AThirdPersonCharacter::ElimTimerFinished()
 	}
 }
 
-void AThirdPersonCharacter::TurningInPlaceCheck(float DeltaTime)
-{
-	if(AO_Yaw > 90.f)
-	{
-		TurningInPlace = ETurningInPlace::ETIP_Right;
-	}
-	else if(AO_Yaw < -90.f)
-	{
-		TurningInPlace = ETurningInPlace::ETIP_Left;
-	}
-	else
-	{
-		TurningInPlace = ETurningInPlace::ETIP_None;
-		return;
-	}
-}
+
 
 bool AThirdPersonCharacter::IsWeaponEquipped()
 {
@@ -323,7 +311,11 @@ void AThirdPersonCharacter::AimOffset(float DeltaTime)
 		FRotator CurrentRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 		FRotator DeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentRotation, StartingAimRotation);
 		AO_Yaw = DeltaRotation.Yaw;
-		bUseControllerRotationYaw = false;
+		if (TurningInPlace == ETurningInPlace::ETIP_None)
+		{
+			InterpAO_Yaw = AO_Yaw;
+		}
+		bUseControllerRotationYaw = true;
 		TurningInPlaceCheck(DeltaTime);
 	}
 	if(Speed > 0.0f || bIsInAir) // moving
@@ -343,6 +335,29 @@ void AThirdPersonCharacter::AimOffset(float DeltaTime)
 		AO_Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AO_Pitch);
 	}
 	
+}
+
+void AThirdPersonCharacter::TurningInPlaceCheck(float DeltaTime)
+{
+	UE_LOG(LogTemp, Warning, TEXT("AO_Yaw: %f"), AO_Yaw);
+	if(AO_Yaw > 90.f)
+	{
+		TurningInPlace = ETurningInPlace::ETIP_Right;
+	}
+	else if(AO_Yaw < -90.f)
+	{
+		TurningInPlace = ETurningInPlace::ETIP_Left;
+	}
+	if(TurningInPlace != ETurningInPlace::ETIP_None)
+	{
+		InterpAO_Yaw = FMath::FInterpTo(InterpAO_Yaw, 0, DeltaTime, 2.5f);
+		AO_Yaw = InterpAO_Yaw;
+		if(FMath::Abs(AO_Yaw) < 15.f)
+		{
+			TurningInPlace = ETurningInPlace::ETIP_None;
+			StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+		}
+	}
 }
 
 void AThirdPersonCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
