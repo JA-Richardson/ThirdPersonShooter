@@ -2,11 +2,11 @@
 
 
 #include "Character/ThirdPersonAnimInstance.h"
-
 #include "ActorFactories/ActorFactory.h"
 #include "Character/ThirdPersonCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Weapons/WeaponBase.h"
 
 void UThirdPersonAnimInstance::NativeInitializeAnimation()
 {
@@ -35,6 +35,7 @@ void UThirdPersonAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	bIsInAir = Character->GetCharacterMovement()->IsFalling();
 	bIsAccelerating = Character->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f ? true : false;
 	bWeaponEquipped = Character->IsWeaponEquipped();
+	EquippedWeapon = Character->GetEquippedWeapon();
 	bAiming = Character->IsAiming();
 	bIsCrouched = Character->bIsCrouched;
 
@@ -46,8 +47,15 @@ void UThirdPersonAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	FRotator DeltaRot = UKismetMathLibrary::NormalizedDeltaRotator(AimRotation, MovementRotation);
 	DeltaRotation = FMath::RInterpTo(DeltaRotation, DeltaRot, DeltaSeconds, 15.f);
 	YawOffset = DeltaRotation.Yaw;
-	
-	
 
+	if (bWeaponEquipped && EquippedWeapon && EquippedWeapon->GetWeaponMesh() && Character->GetMesh())
+	{
+		LeftHandTransform = EquippedWeapon->GetWeaponMesh()->GetSocketTransform(FName("LeftHandSocket"), RTS_World);
+		FVector OutPosition;
+		FRotator OutRotation;
+		Character->GetMesh()->TransformToBoneSpace(FName("J_Bip_R_Hand"), LeftHandTransform.GetLocation(), FRotator::ZeroRotator, OutPosition, OutRotation);
+		LeftHandTransform.SetLocation(OutPosition);
+		LeftHandTransform.SetRotation(OutRotation.Quaternion());
+	}
 	
 }

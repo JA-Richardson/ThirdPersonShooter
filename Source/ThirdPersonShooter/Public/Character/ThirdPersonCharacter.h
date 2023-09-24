@@ -40,6 +40,8 @@ public:
 	class AThirdPersonPlayerState* PlayerState;
 	bool IsWeaponEquipped();
 
+	AWeaponBase* GetEquippedWeapon();
+
 protected:
 	
 	virtual void BeginPlay() override;
