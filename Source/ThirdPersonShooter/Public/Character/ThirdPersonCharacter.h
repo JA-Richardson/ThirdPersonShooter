@@ -7,7 +7,9 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CrosshairInteractInterface.h"
+#include "ThirdPersonShooter/CustomTypes/TurningInPlace.h"
 #include "ThirdPersonCharacter.generated.h"
+
 
 class UInputAction;
 struct FInputActionValue;
@@ -41,6 +43,8 @@ public:
 	bool IsWeaponEquipped();
 
 	AWeaponBase* GetEquippedWeapon();
+
+	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace; }
 
 protected:
 	
@@ -127,5 +131,8 @@ private:
 	void ElimTimerFinished();
 	UPROPERTY()
 	class AThirdPersonPlayerController* ThirdPersonPlayerController;
+
+	ETurningInPlace TurningInPlace;
+	void TurningInPlaceCheck(float DeltaTime);
 	
 };

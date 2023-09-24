@@ -41,7 +41,7 @@ AThirdPersonCharacter::AThirdPersonCharacter()
 
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = true;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -56,6 +56,8 @@ AThirdPersonCharacter::AThirdPersonCharacter()
 	GetMesh()->SetCollisionObjectType(ECC_SkeletalMesh);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+
+	TurningInPlace = ETurningInPlace::ETIP_None;
 }
 
 // Called every frame
@@ -90,6 +92,23 @@ void AThirdPersonCharacter::ElimTimerFinished()
 	if(GameMode)
 	{
 		GameMode->RequestRespawn(this, Controller);
+	}
+}
+
+void AThirdPersonCharacter::TurningInPlaceCheck(float DeltaTime)
+{
+	if(AO_Yaw > 90.f)
+	{
+		TurningInPlace = ETurningInPlace::ETIP_Right;
+	}
+	else if(AO_Yaw < -90.f)
+	{
+		TurningInPlace = ETurningInPlace::ETIP_Left;
+	}
+	else
+	{
+		TurningInPlace = ETurningInPlace::ETIP_None;
+		return;
 	}
 }
 
@@ -305,12 +324,14 @@ void AThirdPersonCharacter::AimOffset(float DeltaTime)
 		FRotator DeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentRotation, StartingAimRotation);
 		AO_Yaw = DeltaRotation.Yaw;
 		bUseControllerRotationYaw = false;
+		TurningInPlaceCheck(DeltaTime);
 	}
 	if(Speed > 0.0f || bIsInAir) // moving
 	{
 		StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 		AO_Yaw = 0.f;
 		bUseControllerRotationYaw = true;
+		TurningInPlace = ETurningInPlace::ETIP_None;
 	}
 
 	AO_Pitch = GetBaseAimRotation().Pitch;

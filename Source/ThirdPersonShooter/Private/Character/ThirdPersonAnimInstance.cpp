@@ -38,6 +38,7 @@ void UThirdPersonAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	EquippedWeapon = Character->GetEquippedWeapon();
 	bAiming = Character->IsAiming();
 	bIsCrouched = Character->bIsCrouched;
+	TurningInPlace = Character->GetTurningInPlace();
 
 	AO_Yaw = Character->GetAO_Yaw();
 	AO_Pitch = Character->GetAO_Pitch();

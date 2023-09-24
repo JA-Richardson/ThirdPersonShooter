@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "ThirdPersonShooter/CustomTypes/TurningInPlace.h"
 #include "ThirdPersonAnimInstance.generated.h"
+
 
 /**
  * 
@@ -50,6 +52,9 @@ private:
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
 	FTransform LeftHandTransform;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
+	ETurningInPlace TurningInPlace;
 	
 	
 };
